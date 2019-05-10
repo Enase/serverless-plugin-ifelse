@@ -1,8 +1,8 @@
 class serverlessPluginIfElse {
     /**
-     * 
-     * @param {*} serverless 
-     * @param {*} options 
+     *
+     * @param {*} serverless
+     * @param {*} options
      */
     constructor(serverless, options = {}) {
         this.serverless = serverless;
@@ -10,11 +10,13 @@ class serverlessPluginIfElse {
         this.hooks = {
             "before:package:initialize": this.applyConditions.bind(this),
             "before:offline:start:init": this.applyConditions.bind(this),
+            "before:print:print": this.applyConditions.bind(this),
+            "before:invoke:test:invoke": this.applyConditions.bind(this),
         };
         this.pluginName = "serverless-plugin-ifelse";
     }
     /**
-     * 
+     *
      */
     applyConditions() {
         let params = this.serverless.service.custom.serverlessIfElse;
@@ -55,16 +57,16 @@ class serverlessPluginIfElse {
     }
 
     /**
-     * 
-     * @param {*} item 
+     *
+     * @param {*} item
      */
     isvalidObject(item) {
         return item && typeof item == "object";
     }
 
     /**
-     * 
-     * @param {*} items 
+     *
+     * @param {*} items
      */
     setItemValues(items) {
         if (!this.isvalidObject(items)) {
@@ -75,8 +77,8 @@ class serverlessPluginIfElse {
         });
     }
     /**
-     * 
-     * @param {*} item 
+     *
+     * @param {*} item
      */
     removeItems(item) {
         if (!item) {
@@ -92,8 +94,8 @@ class serverlessPluginIfElse {
     }
 
     /**
-     * 
-     * @param {*} keyPath 
+     *
+     * @param {*} keyPath
      */
     changeKey(keyPath, type = "remove", newValue = null) {
         let path = keyPath.split(".");
@@ -119,7 +121,7 @@ class serverlessPluginIfElse {
                 }
                 this.serverless.cli.log(this.pluginName + " - Value Changed for : " + keyPath + " to: " + newValue);
             }
-        // If item not exists => add it to path    
+        // If item not exists => add it to path
         } else {
             if (type == "set") {
                 item[path[i]] = newValue;
@@ -134,21 +136,19 @@ class serverlessPluginIfElse {
     }
 
     /**
-     * 
-     * @param {*} condition 
-     * @param {*} matched 
+     *
+     * @param {*} condition
+     * @param {*} matched
      */
     conditionMatchLog(condition, matched = true) {
-        if (this.options.v || this.options.verbose) {
-            this.serverless.cli.log(this.pluginName + " - (" + condition + ") Condition" +
-                ((!matched) ? " not" : "") + " true.");
-        }
+        this.serverless.cli.log(this.pluginName + " - (" + condition + ") Condition" +
+            ((!matched) ? " not" : "") + " true.");
     }
 
     /**
-     * 
-     * @param {*} condition 
-     * @param {*} e 
+     *
+     * @param {*} condition
+     * @param {*} e
      */
     evaluateErrorLog(condition, e) {
         this.serverless.cli.log(this.pluginName + " - cannot evaluate condition " +
