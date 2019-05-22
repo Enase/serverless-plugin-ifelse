@@ -99,7 +99,7 @@ class serverlessPluginIfElse {
      */
     changeKey(keyPath, type = "remove", newValue = null) {
         let path = keyPath.split(".");
-        if (path.length < 1) {
+        if (path.length <= 1) {
             return;
         }
         let item = this.serverless.service;
